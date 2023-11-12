@@ -12,7 +12,7 @@ def initial_board(board):
     board[4][3]=1
     return board
 
-def neighbours (board,x,y):
+def count_neighbours (board,x,y):
     sum=0   
     for i in range(0, 3):
         for j in range(0,3):
@@ -29,24 +29,32 @@ def padded_board (board,w,h): #add a perimeter of 0's to board to be able to run
             new_board[i+1][j+1]=board[i][j]
     return new_board
 
+def trim_edge(board,w,h):
+    return [[board[x][y] for x in range(1,w+1)] for y in range(1,h+1)]
+
                 
 def main():
     w,h=5,5
     board = [[0 for x in range(w)] for y in range(h)] #define a board of wxh 0's
     board=initial_board(board) #set board = initial board
+    print("Initial board: ")
     print_board(board) #print initial board
-    
     new = [[0 for x in range(w+2)] for y in range(h+2)] #define a board of (w+2)x(h+2) 0's
-    for i in range(0, w+1):
-        for j in range(0, h+1):
-            if board[i][j]==1:
-            #if initial_board(board)[i][j]==1:
-                n = neighbours(padded_board(board,w,h),i,j) 
+    padded_initial_board = padded_board(initial_board(board),w,h)
+    for i in range(1, w+1):
+        for j in range(1, h+1):
+            n = count_neighbours(padded_initial_board,i,j) 
+            if padded_initial_board[i][j]==1:
                 if (n == 2 or n == 3):
                     new[i][j] = 1
+            if padded_initial_board[i][j]==0:
+                if n == 3:
+                    new[i][j] = 1
 
-    print("New board: ")
-    print_board(new)
+    #print("New board: ")
+    #print_board(new)
+    print("Final board: ")
+    print_board(trim_edge(new,w,h))
 
 
         
